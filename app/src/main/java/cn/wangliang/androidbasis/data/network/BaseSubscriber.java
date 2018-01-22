@@ -10,7 +10,7 @@ import io.reactivex.subscribers.DisposableSubscriber;
 
 
 
-public abstract class BaseSubscriber<T> extends DisposableSubscriber<HttpResponse<T>> {
+public abstract class BaseSubscriber<T> extends DisposableSubscriber<ResultBean<T>> {
     private WeakReference<Context> mContext;
     private Dialog mDialog;
 
@@ -35,7 +35,7 @@ public abstract class BaseSubscriber<T> extends DisposableSubscriber<HttpRespons
     }
 
     @Override
-    public void onNext(HttpResponse<T> t) {
+    public void onNext(ResultBean<T> t) {
         if (mDialog!=null && mDialog.isShowing())
             mDialog.dismiss();
 
@@ -57,6 +57,6 @@ public abstract class BaseSubscriber<T> extends DisposableSubscriber<HttpRespons
         dispose();
     }
 
-    public abstract void onRequestSuccess(HttpResponse<T> t);
-    public abstract void onResponseError(HttpResponse<T> t);
+    public abstract void onRequestSuccess(ResultBean<T> t);
+    public abstract void onResponseError(ResultBean<T> t);
 }

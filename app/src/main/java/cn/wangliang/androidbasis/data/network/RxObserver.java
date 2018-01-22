@@ -5,6 +5,7 @@ import java.net.SocketTimeoutException;
 import cn.wangliang.androidbasis.R;
 import cn.wangliang.androidbasis.data.network.exception.ApiException;
 import cn.wangliang.androidbasis.data.network.okhttputils.NetworkUtil;
+import cn.wangliang.androidbasis.ui.mvp.MvpView;
 import cn.wangliang.androidbasis.util.Constant;
 import cn.wangliang.androidbasis.util.CommonUtils;
 import io.reactivex.observers.DisposableObserver;
@@ -12,40 +13,39 @@ import io.reactivex.observers.DisposableObserver;
 
 public abstract class RxObserver<T> extends DisposableObserver<T> {
 
-    private BaseView mView;
+    private MvpView mView;
     private String mMsg;
     private boolean isShowDialog;
 
-    public RxObserver(BaseView view, String msg, boolean showDialog) {
+    public RxObserver(MvpView view, String msg, boolean showDialog) {
         this.mView = view;
         this.mMsg = msg;
         this.isShowDialog = showDialog;
     }
 
-    public RxObserver(BaseView view){
+    public RxObserver(MvpView view){
         this(view, CommonUtils.getString(R.string.api_loading), true);
     }
 
-    public RxObserver(BaseView view, boolean showDialog){
+    public RxObserver(MvpView view, boolean showDialog){
         this(view, CommonUtils.getString(R.string.api_loading), showDialog);
     }
 
     @Override
     public void onStart() {
-        if(mView == null || mView.isFinished()) return;
-        if(isShowDialog) mView.stateLoading(mMsg);
+        if(mView == null || mView.isDestroyed()) return;
+        if(isShowDialog) mView.showLoading(mMsg);
     }
 
     @Override
     public void onNext(T bean) {
-        if(mView == null || mView.isFinished()) return;
-        mView.stateMain();
+        if(mView == null || mView.isDestroyed()) return;
         onSuccess(bean);
     }
 
     @Override
     public void onError(Throwable e) {
-        if(mView == null || mView.isFinished()) return;
+        if(mView == null || mView.isDestroyed()) return;
         ResultBean bean;
         if(!NetworkUtil.isConnected()){
             bean = new ResultBean(Constant.STATUS_DISCONNECT, CommonUtils.getString(R.string.api_net_disable));
@@ -56,7 +56,7 @@ public abstract class RxObserver<T> extends DisposableObserver<T> {
         }else {
             bean = new ResultBean(Constant.STATUS_ERROR, CommonUtils.getString(R.string.api_net_error));
         }
-        mView.stateError(bean);
+        mView.showError(bean.getMsg());
         onFailed(bean);
     }
 
@@ -69,7 +69,7 @@ public abstract class RxObserver<T> extends DisposableObserver<T> {
      * 失败回调方法
      */
     public void onFailed(ResultBean bean) {
-        mView.showErrorMsg(bean.getMsg());
+        mView.showError(bean.getMsg());
     }
 
     @Override

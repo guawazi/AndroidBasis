@@ -12,4 +12,7 @@ public interface MvpView {
 
     // 隐藏错误页面
     void hideError();
+
+    // 是否销毁了
+    boolean isDestroyed();
 }
