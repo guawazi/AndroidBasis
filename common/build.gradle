@@ -1,58 +1,43 @@
-apply plugin: 'com.android.application'
-apply plugin: 'org.greenrobot.greendao'
+if (isModule.toBoolean()) {
+    apply plugin: 'com.android.application'
+} else {
+    apply plugin: 'com.android.library'
+}
 
 android {
     compileSdkVersion 26
+
     defaultConfig {
-        applicationId "cn.wangliang.androidbasis"
         minSdkVersion 21
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
 
-    // 编译支持Java8
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    greendao {
-        schemaVersion 1  // 数据库版本号
-        targetGenDir 'src/main/java'
-        daoPackage 'cn.wangliang.androidbasis.data.database.dao'  // dao文件的存储目录
     }
 
     buildTypes {
-        debug {
+        release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "BASE_URL", "\"http://gank.io/api/\""
-            buildConfigField "String", "USER_AGENT", "\"mobile\""
-
-        }
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "BASE_URL", "\"http://gank.io/api/\""
-            buildConfigField "String", "USER_AGENT", "\"mobile\""
         }
     }
+
     sourceSets {
         main {
-            jniLibs.srcDirs = ['libs']
+            if (isModule.toBoolean()) {
+                manifest.srcFile 'src/main/debug/AndroidManifest.xml'
+            } else {
+                manifest.srcFile 'src/main/release/AndroidManifest.xml'
+            }
         }
     }
+
 }
 
 dependencies {
-    //butterknife
-
-    if (!isModule.toBoolean()){
-        compile project(path: ':common')
-    }
-
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
 
     //test
     implementation 'com.android.support.constraint:constraint-layout:1.0.2'

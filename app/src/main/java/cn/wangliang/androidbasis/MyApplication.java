@@ -10,6 +10,7 @@ import com.orhanobut.logger.Logger;
 import com.orhanobut.logger.PrettyFormatStrategy;
 
 import cn.wangliang.androidbasis.data.DatabaseManager;
+import debug.BaseApplication;
 
 
 /**
@@ -20,7 +21,7 @@ import cn.wangliang.androidbasis.data.DatabaseManager;
  * <p>
  */
 
-public class MyApplication extends MultiDexApplication {
+public class MyApplication extends BaseApplication {
 
     private static MyApplication app;
 

@@ -28,3 +28,7 @@ allprojects {
 task clean(type: Delete) {
     delete rootProject.buildDir
 }
+
+ext{
+    com_orhanobut_logger = "com.orhanobut:logger:2.1.1"
+}
