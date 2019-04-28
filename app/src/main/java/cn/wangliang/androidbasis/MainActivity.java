@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.annotation.RequiresApi;
 import android.text.SpannableStringBuilder;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -24,11 +25,14 @@ import android.view.View;
 import android.view.Window;
 import android.widget.TextView;
 
+import com.github.guawazi.common.ui.base.BaseActivity;
+import com.github.guawazi.common.util.CommonUtils;
 import com.github.mzule.activityrouter.router.Routers;
 
+import java.util.ArrayList;
+import java.util.stream.Collectors;
+
 import butterknife.BindView;
-import cn.wangliang.androidbasis.ui.base.BaseActivity;
-import cn.wangliang.androidbasis.util.CommonUtils;
 
 import static android.text.style.DynamicDrawableSpan.ALIGN_BOTTOM;
 import static android.view.WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS;
@@ -100,6 +104,7 @@ public class MainActivity extends BaseActivity {
 //        decor.setSystemUiVisibility(ui);
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void initEventAndData() {
 
@@ -133,7 +138,7 @@ public class MainActivity extends BaseActivity {
             @Override
             public void onClick(View widget) { // 点击事件
                 CommonUtils.showToastShort("我被点了");
-                Routers.open(MainActivity.this,"common://main");
+                Routers.open(MainActivity.this, "common://main");
             }
 
             @Override
@@ -143,19 +148,19 @@ public class MainActivity extends BaseActivity {
                 ds.setUnderlineText(true);
                 // 点击后的背景样式是textview 的高亮属性  textColorHighlight
             }
-        }, length , builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }, length, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         //在单击链接时凡是要执行的动作，都必须设置MovementMethod对象
         mTvContent.setMovementMethod(LinkMovementMethod.getInstance());
 
-        builder.insert(length,"我是新加的");
+        builder.insert(length, "我是新加的");
 
         ///////////// ForegroundColorSpan /////////////
 
         length = builder.length();
         builder.append(System.lineSeparator());
         builder.append("文字颜色");
-        builder.setSpan(new ForegroundColorSpan(Color.RED){
+        builder.setSpan(new ForegroundColorSpan(Color.RED) {
                             @Override
                             public void updateDrawState(TextPaint ds) {
 //                                super.updateDrawState(ds);
@@ -178,7 +183,7 @@ public class MainActivity extends BaseActivity {
         length = builder.length();
         builder.append(System.lineSeparator());
         builder.append("添加删除线");
-        builder.setSpan(new StrikethroughSpan(){
+        builder.setSpan(new StrikethroughSpan() {
                             @Override
                             public void updateDrawState(TextPaint ds) {
                                 super.updateDrawState(ds);
@@ -191,7 +196,7 @@ public class MainActivity extends BaseActivity {
         builder.append(System.lineSeparator());
         builder.append("建议的文字");
         builder.setSpan(new SuggestionSpan(this,
-                        new String[]{SuggestionSpan.SUGGESTION_SPAN_PICKED_BEFORE},SuggestionSpan.FLAG_AUTO_CORRECTION),
+                        new String[]{SuggestionSpan.SUGGESTION_SPAN_PICKED_BEFORE}, SuggestionSpan.FLAG_AUTO_CORRECTION),
                 length, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
 
@@ -222,7 +227,7 @@ public class MainActivity extends BaseActivity {
                             @Override
                             public Drawable getDrawable() {
                                 Drawable drawable = CommonUtils.getDrawable(R.mipmap.ic_launcher_round);
-                                drawable.setBounds(0,0,100,100);
+                                drawable.setBounds(0, 0, 100, 100);
                                 return drawable;
                             }
                         },
@@ -232,7 +237,7 @@ public class MainActivity extends BaseActivity {
         length = builder.length();
         builder.append("这是要被替换成图片的安第斯你能拿到四点你似的");
         builder.append(System.lineSeparator());
-        builder.setSpan(new ImageSpan(this,R.mipmap.ic_launcher,ALIGN_BOTTOM),
+        builder.setSpan(new ImageSpan(this, R.mipmap.ic_launcher, ALIGN_BOTTOM),
                 length, builder.length(), Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
 
         ////////////////  RelativeSizeSpan  //////////////////////
@@ -244,5 +249,20 @@ public class MainActivity extends BaseActivity {
 
 
         mTvContent.setText(builder);
+
+        ArrayList<String> strings = new ArrayList<>();
+        strings.stream()
+                .collect(Collectors.groupingBy(s -> {
+                    int i = s.length();
+                    if (i < 10) {
+                        return "short";
+                    } else {
+                        return "long";
+                    }
+                }, Collectors.groupingBy(s -> {
+                    return "2";
+                })));
+
+
     }
 }

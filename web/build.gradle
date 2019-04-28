@@ -1,34 +1,22 @@
-apply plugin: 'com.android.application'
-apply plugin: 'org.greenrobot.greendao'
+if(isModule.toBoolean()){
+    apply plugin: 'com.android.application'
+}else {
+    apply plugin: 'com.android.library'
+}
 
 android {
     compileSdkVersion 26
     defaultConfig {
-        applicationId "cn.wangliang.androidbasis"
+        if (isModule.toBoolean()) {
+            applicationId "me.wang.liang.web"
+        }
         minSdkVersion 21
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
+
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-    }
 
-    // 编译支持Java8
-    compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_8
-        targetCompatibility JavaVersion.VERSION_1_8
-    }
-
-    greendao {
-        schemaVersion 1  // 数据库版本号
-        targetGenDir 'src/main/java'
-        daoPackage 'cn.wangliang.androidbasis.data.database.dao'  // dao文件的存储目录
-    }
-
-
-    sourceSets {
-        main {
-            jniLibs.srcDirs = ['libs']
-        }
     }
 
     buildTypes {
@@ -46,9 +34,20 @@ android {
             buildConfigField "String", "USER_AGENT", "\"mobile\""
         }
     }
+
+
+    sourceSets {
+        main {
+            if (isModule.toBoolean()) {
+                manifest.srcFile 'src/main/module/AndroidManifest.xml'
+            } else {
+                manifest.srcFile 'src/main/library/AndroidManifest.xml'
+            }
+        }
+    }
+
 }
 
 dependencies {
-    compile project(':common')
-    compile project(':web')
+    implementation project(':common')
 }
