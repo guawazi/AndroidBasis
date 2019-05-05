@@ -1,5 +1,4 @@
 apply plugin: 'com.android.application'
-apply plugin: 'org.greenrobot.greendao'
 
 android {
     compileSdkVersion 26
@@ -10,6 +9,11 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
+            }
+        }
     }
 
     // 编译支持Java8
@@ -18,37 +22,30 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 
-    greendao {
-        schemaVersion 1  // 数据库版本号
-        targetGenDir 'src/main/java'
-        daoPackage 'cn.wangliang.androidbasis.data.database.dao'  // dao文件的存储目录
-    }
-
-
     sourceSets {
         main {
             jniLibs.srcDirs = ['libs']
         }
     }
-
     buildTypes {
         debug {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "BASE_URL", "\"http://gank.io/api/\""
-            buildConfigField "String", "USER_AGENT", "\"mobile\""
-
         }
         release {
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "BASE_URL", "\"http://gank.io/api/\""
-            buildConfigField "String", "USER_AGENT", "\"mobile\""
         }
     }
+
 }
 
 dependencies {
-    compile project(':common')
-    compile project(':web')
+    implementation project(path: ':common')
+    annotationProcessor 'com.alibaba:arouter-compiler:1.2.2'
+
+    if (!isModule.toBoolean()){
+        implementation project(path: ':web')
+    }
+
 }

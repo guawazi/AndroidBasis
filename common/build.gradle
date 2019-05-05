@@ -1,47 +1,45 @@
-if (commonIsModule.toBoolean()) {
-    apply plugin: 'com.android.application'
-} else {
-    apply plugin: 'com.android.library'
-}
-
+apply plugin: 'com.android.library'
 android {
     compileSdkVersion 26
 
     defaultConfig {
-        if (commonIsModule.toBoolean()) {
-            applicationId "me.wang.liang.common"
-        }
         minSdkVersion 21
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
-    }
-
-    buildTypes {
-        debug {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "BASE_URL", "\"http://gank.io/api/\""
-            buildConfigField "String", "USER_AGENT", "\"mobile\""
-
-        }
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "BASE_URL", "\"http://gank.io/api/\""
-            buildConfigField "String", "USER_AGENT", "\"mobile\""
-        }
-    }
-    sourceSets {
-        main {
-            if (commonIsModule.toBoolean()) {
-                manifest.srcFile 'src/main/module/AndroidManifest.xml'
-            } else {
-                manifest.srcFile 'src/main/library/AndroidManifest.xml'
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
             }
         }
     }
 
+
+    buildTypes {
+        buildTypes {
+            debug {
+                minifyEnabled false
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+                buildConfigField "String", "BASE_URL", "\"http://gank.io/api/\""
+                buildConfigField "String", "USER_AGENT", "\"mobile\""
+            }
+            release {
+                minifyEnabled true
+                proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+                buildConfigField "String", "BASE_URL", "\"http://gank.io/api/\""
+                buildConfigField "String", "USER_AGENT", "\"mobile\""
+            }
+        }
+    }
+    sourceSets {
+        main {
+            manifest.srcFile 'src/main/library/AndroidManifest.xml'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -73,7 +71,6 @@ dependencies {
     api 'io.reactivex.rxjava2:rxjava:2.1.0'
     api 'io.reactivex.rxjava2:rxandroid:2.0.1'
 
-
     //glide
     api 'com.github.bumptech.glide:glide:3.8.0'
 
@@ -91,6 +88,9 @@ dependencies {
     api 'com.githang:status-bar-compat:0.7'
 
     // router
-    api 'com.github.mzule.activityrouter:activityrouter:1.2.2'
-    annotationProcessor 'com.github.mzule.activityrouter:compiler:1.1.7'
+    api 'com.alibaba:arouter-api:1.4.1'
+    annotationProcessor 'com.alibaba:arouter-compiler:1.2.2'
+
+    // rxbus
+    api 'com.hwangjr.rxbus:rxbus:2.0.0'
 }

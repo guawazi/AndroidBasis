@@ -3,9 +3,7 @@ package com.github.guawazi.common;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-import com.github.mzule.activityrouter.annotation.Router;
 
-@Router("main")
 public class MainActivity extends AppCompatActivity {
 
     @Override

@@ -16,24 +16,29 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [AROUTER_MODULE_NAME: project.getName()]
+            }
+        }
+        buildTypes {
+            buildTypes {
+                debug {
+                    buildConfigField "String", "WEB_ROOT_URL", "\"https://www.baidu.com\""
+                    buildConfigField "String", "WEB_USER_AGENT", "\"mobile\""
+                    buildConfigField "String", "DOMAIN", "\".baidu.com\""
+                }
+                release {
+                    buildConfigField "String", "WEB_ROOT_URL", "\"https://www.baidu.com\""
+                    buildConfigField "String", "WEB_ROOT_URL", "\"mobile\""
+                    buildConfigField "String", "DOMAIN", "\".baidu.com\""
+                }
+            }
+        }
     }
 
-    buildTypes {
-        debug {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "BASE_URL", "\"http://gank.io/api/\""
-            buildConfigField "String", "USER_AGENT", "\"mobile\""
 
-        }
-        release {
-            minifyEnabled true
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            buildConfigField "String", "BASE_URL", "\"http://gank.io/api/\""
-            buildConfigField "String", "USER_AGENT", "\"mobile\""
-        }
-    }
+
 
 
     sourceSets {
@@ -46,8 +51,13 @@ android {
         }
     }
 
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
-    implementation project(':common')
+    implementation project(path: ':common')
+    annotationProcessor 'com.alibaba:arouter-compiler:1.2.2'
 }
